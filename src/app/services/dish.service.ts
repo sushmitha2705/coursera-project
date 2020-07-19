@@ -21,4 +21,7 @@ export class DishService {
     return of(DISHES.filter((dish) => dish.featured)[0]);
     
   }
+  getDishIds(): Observable<string[] | any> {
+    return of(DISHES.map(dish => dish.id ));
+  }
 }
