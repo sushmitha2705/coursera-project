@@ -44,8 +44,49 @@
           </p>
         </mat-card-content>
       </mat-card>
+      <div>
+        <!-- <p>{{ feedbackForm.value | json }} {{ feedbackForm.status | json }}</p> -->
+        <p *ngIf="feedbackForm.valid">
+          {{feedbackForm.controls.comment.value}}
+          <br>
+          {{feedbackForm.controls.rating.value}} stars
+          <br>
+          --{{feedbackForm.controls.author.value}},
+          
+          {{ currDate | date:medianDate}}
+        </p>
+
+        <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmission()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="author" placeholder="Name" type="text" required>
+              <mat-error *ngIf="formErrors.author">{{formErrors.author}}</mat-error>
+            </mat-form-field>
+          </p>
+          
+              <mat-slider
+                  class="example-margin"
+                  [disabled]="disabled"
+                  [invert]="invert"
+                  [max]="5"
+                  [min]="1"
+                  [step]="1"
+                  [thumbLabel]="thumbLabel"
+                  [tickInterval]="getSliderTickInterval()"
+                  formControlName="rating"
+                  [vertical]="vertical">
+              </mat-slider>
+                        <p>
+            <mat-form-field class="full-width">
+              <textarea matInput formControlName="comment" placeholder="Your Comment" rows=12></textarea>
+            </mat-form-field>
+          </p>
+          <button type="submit" mat-raised-button color="primary" [disabled]="!feedbackForm.valid">Submit</button>
+        </form>
+      </div>
   </div>
   <div [hidden]="dish">
     <mat-spinner></mat-spinner><h4>Loading . . . Please Wait</h4>
   </div>
+
 </div>
