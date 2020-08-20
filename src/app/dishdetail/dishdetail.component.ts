@@ -16,6 +16,8 @@ import { Feedback, ContactType } from '../shared/feedback';
 })
 
 export class DishdetailComponent implements OnInit {
+  dishcopy: Dish;
+  errMess: string;
   dish: Dish;
   dishIds: string[];
   prev: string;
@@ -40,14 +42,16 @@ export class DishdetailComponent implements OnInit {
   @ViewChild('fform',{static: true}) feedbackFormDirective;
     constructor(private dishservice: DishService,
         private route: ActivatedRoute,
-        private location: Location,private fb: FormBuilder,@Inject('BaseURL') private BaseURL) {
+        private location: Location,private fb: FormBuilder,@Inject('baseURL') private baseURL) {
           this.createForm();
          }
         ngOnInit() {
           console.log(this.feedbackForm.valid);
           this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
-          this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
-          .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); });
+          this.route.params
+              .pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
+              .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
+                errmess => this.errMess = <any>errmess );
             
           }
           setPrevNext(dishId: string) {
@@ -105,6 +109,13 @@ export class DishdetailComponent implements OnInit {
             const { author, rating, comment } = this.feedbackForm.value;
             this.currDate = new Date();
             this.dish.comments.push({ author, rating, comment, date: this.currDate.toDateString()});
+            this.dishcopy.comments.push(comment);
+            // Added new comments to database
+            this.dishservice.putDish(this.dishcopy)
+              .subscribe(dish => {
+                this.dish = dish; this.dishcopy = dish;
+              },
+              errmess => { this.dish = null; this.dishcopy = null; this.errMess = <any>errmess; });
             this.feedbackForm.reset();
           }
 }

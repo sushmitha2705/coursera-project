@@ -6,12 +6,13 @@
     fxLayoutGap="10px" 
     fxLayoutGap.xs="0">
 
+
   <div fxFlex="40" *ngIf="dish">
     <mat-card class="example-card"  >
         <mat-card-header>
           <mat-card-title><b>{{dish.name | uppercase}}</b></mat-card-title>
         </mat-card-header>
-        <img mat-card-image src="{{BaseURL + dish.image}}" alt={{dish.name}}>
+        <img mat-card-image src="{{baseURL + dish.image}}" alt={{dish.name}}>
         <mat-card-content>
           <p>
            {{dish.description}}
@@ -85,8 +86,11 @@
         </form>
       </div>
   </div>
-  <div [hidden]="dish">
+  <div [hidden]="dish || errMess">
     <mat-spinner></mat-spinner><h4>Loading . . . Please Wait</h4>
   </div>
-
+  <div fxFlex *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
+  </div>
 </div>
