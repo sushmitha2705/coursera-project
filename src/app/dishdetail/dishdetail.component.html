@@ -7,7 +7,7 @@
     fxLayoutGap.xs="0">
 
 
-    <div fxFlex="40" *ngIf="dish" [@visibility]="visibility">
+    <div fxFlex="40" *ngIf="dish" [@visibility]="visibility" [@expand]>
     <mat-card class="example-card"  >
         <mat-card-header>
           <mat-card-title><b>{{dish.name | uppercase}}</b></mat-card-title>
@@ -29,7 +29,7 @@
       </mat-card>      
   </div>
 
-  <div fxFlex="40" *ngIf="dish" [@visibility]="visibility">
+  <div fxFlex="40" *ngIf="dish" [@visibility]="visibility" [@expand]>
     <mat-card class="example-card" >
         <mat-card-header>
           <mat-card-title><b>{{COMMENTS| uppercase}}</b></mat-card-title>
