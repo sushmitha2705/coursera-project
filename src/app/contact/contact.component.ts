@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { flyInOut } from '../animations/app.animation';
 import { Feedback, ContactType } from '../shared/feedback';
-
-//import { Component, OnInit, ViewChild } from '@angular/core';
+import {FeedbackService} from '../services/feedback.service';
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
@@ -16,14 +15,17 @@ import { Feedback, ContactType } from '../shared/feedback';
       flyInOut()
     ]
 })
+
 export class ContactComponent implements OnInit {
   
-
+  isloading : boolean;
+  isAckon: boolean;
   feedbackForm: FormGroup;
   feedback: Feedback;
+  contactErrMss: string
   contactType = ContactType;
   @ViewChild('fform',{static: true}) feedbackFormDirective;
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,private feedbackservice: FeedbackService,@Inject('baseURL') private baseURL) {
     this.createForm();
   }
   ngOnInit() {
@@ -90,16 +92,29 @@ export class ContactComponent implements OnInit {
     }
   }
   onSubmit() {
-    this.feedbackForm = this.fb.group({
-      firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)] ],
-      lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)] ],
-      telnum: ['', [Validators.required, Validators.pattern] ],
-      email: ['', [Validators.required, Validators.email] ],
-      agree: false,
-      contacttype: 'None',
-      message: ''
-    });
-    this.feedbackFormDirective.resetForm();
+    this.feedback=this.feedbackForm.value;
+    console.log('feedback is:' + this.feedbackForm.value);
+    this.isloading=true;
+    this.feedbackForm.reset();
+    this.feedbackservice
+    .submitFeedback(this.feedback)
+    .subscribe(feedback => {
+      this.isloading = false;
+      this.isAckon = true;
+      setTimeout(() => {
+        this.isAckon = false;
+      }, 5000);
+      this.feedback = feedback;
+    },
+    errmess => { 
+      this.isloading = false;
+      this.feedback = null; this.contactErrMss = <any>errmess; 
+    }
+    );
+
+ 
+    
   }
+
 
 }

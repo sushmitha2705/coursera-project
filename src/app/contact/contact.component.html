@@ -1,6 +1,6 @@
 <div class="container"
   fxLayout="column"
-  fxLayoutGap="10px">
+  fxLayoutGap="10px" >
 
   <div fxFlex>
     <div>
@@ -35,11 +35,24 @@
       </div>
     </div>
   </div>
+  
   <div fxFlex fxFlexOffset="20px" class="form-size">
     <h3>Send us your Feedback</h3>
-    <p>{{ feedbackForm.value | json }} {{ feedbackForm.status | json }}</p>
-
-    <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+    <div *ngIf="isloading">
+      Submiting Form <br>
+      <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="isAckon">
+      <h2>Your Submission</h2>
+      <p>First Name: {{feedback.firstname}}</p>
+      <p>Last Name: {{feedback.lastname}}</p>
+      <p>Tel. Number: {{feedback.telnum}}</p>
+      <p>Email: {{feedback.email}}</p>
+      <p>Contact You?: {{feedback.agree}}</p>
+      <p>How?: {{feedback.contacttype}}</p>
+      <p>Feedback: {{feedback.message}}</p>
+    </div>
+    <form *ngIf="!isloading && !isAckon" novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
       <p>
         <mat-form-field class="half-width">
           <input matInput formControlName="firstname" placeholder="First Name" type="text" required>
